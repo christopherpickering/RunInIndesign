@@ -1,13 +1,9 @@
 import sublime, sublime_plugin
-import time
 import os
-import socket
 import threading
-from queue import Queue
 import socketserver
 import subprocess
 import sys
-import time
 import re
 import tempfile
 
@@ -20,18 +16,19 @@ class RunInIndesignCommand(sublime_plugin.TextCommand):
 			self.runC(self)
 		else:
 			self.selectTarget()
+
 	def selectTarget(self):
 		sett=sublime.load_settings('RunInIndesign.sublime-settings')
-		ctarget=sett.get('target','default')
 		available=sett.get('available')
 		print(available)
-		#print (map(lambda c:c['name'],available))
 		self.view.window().show_quick_panel([it['name'] for it in available],self.targetSel)
+
 	def targetSel(self,index):
 		sett=sublime.load_settings('RunInIndesign.sublime-settings')
 		available=[it['identifier'] for it in sett.get('available')][index]
 		sett.set('target',available)
 		sublime.save_settings('RunInIndesign.sublime-settings')
+
 	def runC(self, edit):
 		self.window=self.view.window()
 		self.output_view = Cons(self.window)
@@ -49,13 +46,13 @@ class RunInIndesignCommand(sublime_plugin.TextCommand):
 		else:	
 			iR.runWin('.'+currentTarget if currentTarget else '""')
 		
-		#iR.server.socket.close()
 	def getFile(self):
 		f=self.view.file_name()
 		if f==None or self.view.is_dirty():
 			self.window.run_command('save')
 			f=self.view.file_name()
 		return f
+
 	def saveCurrentViewInTempFile(self, view):
 			#
 			# Create a temporary file to hold our contents
@@ -72,6 +69,7 @@ class RunInIndesignCommand(sublime_plugin.TextCommand):
 			tempFile.close()
 
 			return tempFile.name
+
 	def markLine(self,view, line_number):
 		self.clear(view)
 		print(line_number)
@@ -83,21 +81,17 @@ class RunInIndesignCommand(sublime_plugin.TextCommand):
 			'keyword', 
 			'dot', 
 			sublime.DRAW_NO_FILL
-		)			
+		)
+
 	def clear(self,view):
 		view.erase_regions('jsx_error')	
+
 	def processOtuput(self):
-		#time.sleep(1)
+
 		log=self.output_view.content
 		print(log)
 		isInError=None
-		# finshedOn=None
-		# while not isInError:
-		# 	print ('ping')
-		# print (threading.currentThread())
-		# log=self.output_view.content
 		isInError=re.search('\[Exited with error\]',log)
-		# finshedOn=re.search('\[Finished\]',log)
 		
 		if isInError:
 			try:
@@ -121,6 +115,7 @@ class RunInIndesignCommand(sublime_plugin.TextCommand):
 				self.output_view.addText('\nCannot get errors: '+str(e))		
 		else:
 			sublime.status_message("No errors")
+
 class Cons(object):
 	def __init__(self,window):
 		self.content=''
@@ -133,10 +128,10 @@ class Cons(object):
 		self.window=window
 
 	def addText(self,txt):
-		#print (txt)
 		str = txt.replace('\r\n', '\n').replace('\r', '\n')
 		self.content=self.content+str
 		self.output_view.run_command('append', {'characters': str, 'force': True, 'scroll_to_end': True})
+
 	def showConsole(self):
 		self.window.run_command("show_panel", {"panel": "output.console"})
 
@@ -178,9 +173,7 @@ class AsyncProcess(object):
 		startupinfo = None
 		if os.name == "nt":
 			startupinfo = subprocess.STARTUPINFO()
-			#startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-	   
 		print (shell_cmd)
 		if sys.platform == "win32":
 			# Use shell=True on Windows, so shell_cmd is passed through with the correct escaping
@@ -221,18 +214,7 @@ class IndRunner(object):
 		self.runFile = fileToRun
 		ip, self.port = self.server.server_address
 		self.server_thread = threading.Thread(target=self.server.serve_forever, name='Server')
-		# Exit the server thread when the main thread terminates
-		#self.server_thread.daemon = True
-
-		# self.server_thread.start()
-		# print("Server loop running in thread:", self.server_thread.name)
-
-		# while 1:
-		# 	try:
-		# 		pass
-		# 	except KeyboardInterrupt:
-		# 		print('Exited')
-		# 		break   
+		
 	def scanAndFixTargetEngine(self):
 		##reset the jsx to be sure
 		f=open(self.jsxRun,'r')
@@ -242,8 +224,6 @@ class IndRunner(object):
 		f=open(self.jsxRun,'w')
 		f.write(txt)
 		f.close()
-
-
 		f = open(self.runFile,'r',encoding="utf-8")
 		txt=f.read()
 		incl=re.search('#targetengine.+?$',txt,re.M)
@@ -265,26 +245,24 @@ class IndRunner(object):
 			self.server_thread.start()
 			self.proc = threading.Thread(target=AsyncProcess, args=(cmd,))
 			print('Server started')
-			#self.proc=AsyncProcess(cmd)
-			#print(self.proc._args)
 			self.proc.start()
+
 		except:
 			self.server.shutdown()	
+
 	def runWin(self, specif):
 		try:
 			cmd='cscript "{}" "{}" {:d} {}'.format(self.winRun,self.runFile,self.port,specif)
 			print(cmd)
-			#cmd='cscript "'++self.winRun+'" "'+	self.runFile+'" '+str(self.port)+' '+specif
 			self.server_thread.start()
 			self.proc = threading.Thread(target=AsyncProcess, args=(cmd,))
 			print('Server started')
-			#self.proc=AsyncProcess(cmd)
-			#print(self.proc._args)
 			self.proc.start()
+
 		except:
 			self.server.shutdown()
-	def finishRun(self):
 
+	def finishRun(self):
 		self.finis()
 		print('End Server')
 

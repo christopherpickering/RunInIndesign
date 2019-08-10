@@ -27,6 +27,14 @@
         {
             "identifier": "CC.2017",
             "name": "CC 2017"
+        },
+        {
+            "identifier": "CC.2018",
+            "name": "CC 2018"
+        },
+        {
+            "identifier": "CC.2019",
+            "name": "CC 2019"
         }
     ],
     "target": ""

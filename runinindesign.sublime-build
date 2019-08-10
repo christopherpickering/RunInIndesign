@@ -1,0 +1,4 @@
+{
+    "selector": "source.jsx",
+    "cmd": ["jsx", "run_in_indesign", "$file"],
+}
