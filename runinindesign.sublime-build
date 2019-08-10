@@ -1,4 +1,5 @@
 {
     "selector": "source.jsx",
-    "cmd": ["run_in_indesign", "$file"],
+    "cmd": ["run", "$file"],
+    "target":"runinindesign.py"
 }
