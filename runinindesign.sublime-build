@@ -1,4 +1,4 @@
 {
     "selector": "source.jsx",
-    "cmd": ["run", "run_in_indesign", "$file"],
+    "cmd": ["run_in_indesign", "$file"],
 }
