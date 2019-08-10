@@ -1,5 +1,7 @@
 {
     "selector": "source.jsx",
-    "cmd": ["run", "$file"],
-    "target":"runinindesign.py"
+    "target":     "run_in_indesign",
+    "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+    "cmd": ["run"]
+    
 }
