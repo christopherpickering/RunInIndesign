@@ -1,7 +1,15 @@
 {
     "selector": "source.jsx",
-    "target":     "run_in_indesign",
-    "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-    "cmd": ["run"]
+    "target":     "runinindesign",
+     "variants": [
+        {
+            "name": "Run",
+            "task": "run"
+        },
+        {
+            "name": "Select Indesign Version",
+            "task": "select"
+        }
+    ]
     
 }
