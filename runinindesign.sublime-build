@@ -1,6 +1,6 @@
 {
     "selector": "source.jsx",
-    "target":     "runinindesign",
+    "target":     "runInIndesign",
      "variants": [
         {
             "name": "Run",
