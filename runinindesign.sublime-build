@@ -1,10 +1,10 @@
 {
     "selector": "source.jsx",
-    "target":     "runInIndesign",
+    
      "variants": [
         {
             "name": "Run",
-            "task": "run"
+            "cmd": ["$packages/RunInIndesign/test.py"]
         },
         {
             "name": "Select Indesign Version",
